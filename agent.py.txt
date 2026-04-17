@@ -1,0 +1,41 @@
+import requests
+from bs4 import BeautifulSoup
+from plyer import notification
+import time
+
+def get_weather():
+    url = "https://www.google.com/search?q=antalya+hava+durumu"
+    headers = {"User-Agent": "Mozilla/5.0"}
+
+    r = requests.get(url, headers=headers)
+    soup = BeautifulSoup(r.text, "html.parser")
+
+    temp = soup.find("span", class_="wob_t").text
+    weather = soup.find("span", class_="wob_dc").text
+
+    return weather, temp
+
+def notify(weather, temp):
+    notification.notify(
+        title="Antalya Hava Durumu 🌤",
+        message=f"{weather}, {temp}°C",
+        timeout=5
+    )
+
+last = ""
+
+while True:
+    try:
+        weather, temp = get_weather()
+        current = weather + temp
+
+        if current != last:
+            notify(weather, temp)
+            print(weather, temp)
+            last = current
+
+        time.sleep(600)
+
+    except:
+        print("Hata, tekrar deniyorum...")
+        time.sleep(10)
