@@ -1,0 +1,26 @@
+name: Hava Durumu Botu
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+
+jobs:
+  hava-durumu-gonder:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Kodu çek
+        uses: actions/checkout@v3
+
+      - name: Python kur
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Kütüphaneleri yükle
+        run: pip install -r requirements.txt
+
+      - name: Botu çalıştır
+        run: python agent.py
